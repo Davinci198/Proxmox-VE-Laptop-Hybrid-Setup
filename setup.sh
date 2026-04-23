@@ -8,6 +8,9 @@ SSID1="YourWI-FI"
 PASS="YOURPASSWORD"
 USER_NAME="YourUsername"
 
+echo "=== CHECK ROOT ==="
+[ "$EUID" -ne 0 ] && echo "Run as root!" && exit 1
+
 echo "=== 1. REPO & SYSTEM UPDATE (TRIXIE) ==="
 # Ștergem orice conflict de repo-uri vechi
 rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources
@@ -30,13 +33,33 @@ EOF
 
 apt update && apt full-upgrade -y
 
-echo "=== 2. INSTALARE DRIVERE VIDEO (NON-FREE) ==="
+echo "=== 2. INSTALARE DRIVERE VIDEO SI SISTEM (NON-FREE) ==="
 # Instalăm driverele înainte de HOLD pentru a evita erorile de dependențe
-apt install -y intel-media-va-driver-non-free mesa-va-drivers mesa-utils intel-gpu-tools
+apt install -y intel-media-va-driver mesa-va-drivers mesa-utils intel-gpu-tools task-cinnamon-desktop lightdm \
+network-manager iw wireless-tools dnsmasq \
+iptables-persistent curl wget sudo \
+alsa-utils pulseaudio pavucontrol \
+tlp
+
+systemctl set-default graphical.target
 
 echo "=== 3. FREEZE STABILITY (HOLD) ==="
 # Înghețăm kernel-ul și pachetele de bază Proxmox pentru stabilitate pe Trixie
 apt-mark hold proxmox-ve proxmox-kernel-$(uname -r) proxmox-default-kernel pve-firmware || true
+
+echo "=== USER SETUP ==="
+id "$USER_NAME" &>/dev/null || adduser --disabled-password --gecos "" "$USER_NAME"
+echo "$USER_NAME:parola123" | chpasswd
+usermod -aG video,render,sudo "$USER_NAME"
+echo "$USER_NAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER_NAME
+
+mkdir -p /etc/lightdm/lightdm.conf.d/
+cat <<EOF > /etc/lightdm/lightdm.conf.d/12-autologin.conf
+[Seat:*]
+user-session=cinnamon
+autologin-user=$USER_NAME
+autologin-user-timeout=0
+EOF
 
 echo "=== 4. GPU PASSTHROUGH & BLACKLIST NVIDIA MOARTA ==="
 # Parametrii IOMMU pentru Intel Haswell
