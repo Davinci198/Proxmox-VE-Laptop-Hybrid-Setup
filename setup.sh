@@ -4,9 +4,9 @@ set -e
 # =====================
 # 1. CONFIGURARE
 # =====================
-SSID1="CASA CECILIA 5G"
-PASS="CASACECILIA"
-USER_NAME="dani"
+SSID1="YourWI-FI"
+PASS="YOURPASSWORD"
+USER_NAME="YourUsername"
 
 echo "=== 1. REPO & SYSTEM UPDATE (TRIXIE) ==="
 # Ștergem orice conflict de repo-uri vechi
