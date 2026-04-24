@@ -14,7 +14,7 @@ echo "=== [1] REPO & SYSTEM UPDATE (TRIXIE) ==="
 [ "$EUID" -ne 0 ] && echo "Run as root!" && exit 1
 
 # Curățăm repo-urile vechi pentru a evita conflicte
-rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources
+#rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources
 
 # Surse Debian Trixie (Modern)
 cat <<EOF > /etc/apt/sources.list
@@ -42,7 +42,7 @@ echo "=== [3] INSTALARE DRIVERE VIDEO SI SISTEM (FIX HASWELL) ==="
 # Am adăugat i965-va-driver pentru a repara eroarea libva de pe i7-4700HQ
 apt install -y intel-media-va-driver-non-free i965-va-driver mesa-va-drivers mesa-utils \
 intel-gpu-tools task-cinnamon-desktop lightdm network-manager iw wireless-tools dnsmasq \
-iptables-persistent curl wget sudo alsa-utils pulseaudio pavucontrol tlp vainfo
+iptables-persistent curl wget sudo alsa-utils pulseaudio pavucontrol tlp
 
 systemctl set-default graphical.target
 
