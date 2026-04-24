@@ -8,7 +8,7 @@ USER_NAME="dani"
 PASS="parola123"
 SSID1="YourWI-FI"
 WIFI_PASS="YOURPASSWORD"
-THORIUM_URL="https://github.com"
+THORIUM_URL="https://github.com/Alex313031/thorium/releases/download/M138.0.7204.303/thorium-browser_138.0.7204.303_AVX.deb"
 
 echo "=== [1] REPO & SYSTEM UPDATE (TRIXIE) ==="
 [ "$EUID" -ne 0 ] && echo "Run as root!" && exit 1
