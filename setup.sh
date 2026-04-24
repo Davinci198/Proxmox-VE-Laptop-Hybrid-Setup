@@ -121,6 +121,12 @@ if [ -n "$EFI_DEV" ]; then
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
 fi
 
+echo "=== POWER OPTIMIZATION ==="
+systemctl enable tlp
+systemctl start tlp
+
+update-initramfs -u -k all
+
 echo "=== [8] PERFORMANCE (ZRAM & CPU PINNING) ==="
 apt install -y zramswap-enabler
 echo -e "ALGO=zstd\nPERCENT=25\nPRIORITY=100" > /etc/default/zramswap
