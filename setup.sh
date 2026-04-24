@@ -13,8 +13,6 @@ THORIUM_URL="https://github.com"
 echo "=== [1] REPO & SYSTEM UPDATE (TRIXIE) ==="
 [ "$EUID" -ne 0 ] && echo "Run as root!" && exit 1
 
-# Curățăm repo-urile vechi pentru a evita conflicte
-#rm -f /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources
 
 # Surse Debian Trixie (Modern)
 cat <<EOF > /etc/apt/sources.list
