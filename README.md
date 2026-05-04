@@ -1,47 +1,42 @@
 # 💻 Proxmox VE Laptop Hybrid Optimizer (v1.7.1 - Trixie Edition)
 
+[Romanian version below]
+
+Transform your laptop into a virtualization beast with **Proxmox 9**, optimized for extreme **WiFi performance**, low latency, and a hybrid workflow.
+
+> **Update v1.7.1:** Optimized for Debian Trixie (Debian 13). Validated performance: **160 Mbps** download within VMs and stable latency of **~10ms**.
+
+## 🌟 Key Features (v1.7.1 Turbo)
+
+- **WiFi Hardened Networking:** Uses `NetworkManager` with strict stability policies. Includes a **WiFi Watchdog** (systemd service) that monitors connectivity and automatically resets the WiFi interface if pings to Google DNS fail.
+- **Top Speed (160 Mbps):** Optimized configuration for USB Passthrough and disabled Power Management on the WiFi card to achieve maximum throughput.
+- **Proxmox 9 Ready:** Integrated patch to remove the "No Subscription" nag and automated setup for **Debian Trixie (Testing)** repositories.
+- **Thorium Turbo Mode:** Automatically installs the Thorium browser (AVX optimized) and moves the cache folder to a **RAM disk (/tmp)** to protect the SSD and provide near-instant browsing.
+- **CPU Pinning (Core Isolation):** Dedicates cores 4-7 exclusively to Virtual Machines via `taskset`, leaving cores 0-3 free for a lag-free Host interface (Cinnamon) and background processes.
+- **ZRAM & SSD Protection:** Implements ZRAM with the `zstd` algorithm and `swappiness=100`. Includes automated `fstrim` to maintain long-term SSD health.
+- **Automated NAT Bridge (vmbr1):** Integrated `dnsmasq` server on a private bridge (`10.10.10.1`), providing instant internet and DHCP IPs to any connected VM.
+
+---
+
+# 💻 Proxmox VE Laptop Hybrid Optimizer (v1.7.1 - Română)
+
 Transformă-ți laptopul într-o bestie de virtualizare cu **Proxmox 9**, optimizat pentru performanță extremă pe **WiFi**, latență minimă și workflow hibrid.
 
-> **Update v1.7.1:** Optimizat pentru Debian Trixie (Debian 13), performanțe validate de **160 Mbps** download în VM și latență stabilă de **~10ms**.
+## 🚀 Instalare / Installation
 
-## 🌟 Caracteristici Cheie (v1.7.1 Turbo)
-
-- **WiFi Hardened Networking:** Utilizează `NetworkManager` cu politici stricte de stabilitate. Include un **WiFi Watchdog** (serviciu systemd) care monitorizează conexiunea și o resetează automat dacă ping-ul către Google DNS eșuează.
-- **Viteză de Top (160 Mbps):** Configurație optimizată pentru USB Passthrough și dezactivarea managementului de energie (Power Management Off) pe placa WiFi pentru a atinge viteze maxime.
-- **Proxmox 9 Ready:** Patch integrat pentru eliminarea mesajului "No Subscription" și configurare automată pentru repository-urile **Debian Trixie (Testing)**.
-- **Thorium Turbo Mode:** Instalează automat browserul Thorium (AVX optimized) și îi mută folderul de cache în **RAM disk (/tmp)** pentru a proteja SSD-ul și a oferi navigare instantanee.
-- **CPU Pinning (Core Isolation):** Dedică nucleele 4-7 exclusiv mașinilor virtuale prin `taskset`, lăsând nucleele 0-3 libere pentru fluiditatea interfeței Cinnamon și a proceselor Host.
-- **ZRAM & SSD Protection:** Implementare ZRAM cu algoritm `zstd` și `swappiness=100`. Include activarea automată `fstrim` pentru menținerea performanței SSD-ului pe termen lung.
-- **NAT Bridge Automat (vmbr1):** Server `dnsmasq` integrat pe bridge-ul privat (`10.10.10.1`), oferind internet și IP-uri DHCP instantaneu oricărui VM conectat.
-
-## ⚠️ Schimbări Majore de Stabilitate
-
-- **Kernel Lock:** Scriptul aplică `apt-mark hold` pe pachetele de kernel Proxmox pentru a preveni stricarea driverelor WiFi la update-uri nesupravegheate.
-- **DNS Imutabil:** Fișierul `/etc/resolv.conf` este configurat cu Google și Cloudflare DNS și blocat cu atributul `+i` (immutable) pentru a preveni suprascrierea lui de către ISP.
-- **GPU Optimization:** Blacklist automat pentru driverele NVIDIA pentru a forța rularea eficientă pe grafica integrată Intel.
-
-## 🚀 Instalare și Utilizare
-
-1. Instalează Proxmox VE "curat" pe laptop.
-2. Clonează repo-ul și editează fișierul `setup.sh` cu datele tale:
+1. Install a fresh Proxmox VE on your laptop.
+2. Clone the repo and edit `setup.sh` with your credentials:
    ```bash
    SSID1="CASA CECILIA 5G"
    WIFI_PASS="CASACECILIA"
    USER_NAME="dani"
    ```
-3. Rulează ca **ROOT**:
+3. Run as **ROOT**:
    ```bash
    chmod +x setup.sh
    ./setup.sh
    ```
-4. **Reboot:** Sistemul va porni automat în mediul grafic Cinnamon.
-
-## 💻 Configurație Recomandată VM (v1.7.1)
-
-- **Network:** Bridge `vmbr1` (Model: **VirtIO**).
-- **Processor:** Type pe **host** și alocă **4 nuclee** (corectat pentru pinning pe 4-7).
-- **Disk:** SCSI cu controller **VirtIO SCSI single**, activat **Discard** și **io_uring**.
-- **Update Browser:** Rulează periodic `/usr/local/bin/update-thorium`.
+4. **Reboot:** Your system will automatically boot into the Cinnamon GUI.
 
 ---
-*Mentenanță și Optimizare: [Davinci198](https://github.com/Davinci198)*
+*Maintained and Optimized by: [Davinci198](https://github.com/Davinci198)*
