@@ -1,49 +1,47 @@
-# Proxmox-VE-Laptop-Hybrid-Setup
+# 💻 Proxmox VE Laptop Hybrid Optimizer (v1.7.1 - Trixie Edition)
 
-Proxmox VE Laptop Hybrid Optimizer
-Turn your laptop into a high-performance Proxmox node with WiFi WAN, NAT, and Desktop Environment
-This script is an all-in-one solution for users running Proxmox VE on a laptop (optimized for ASUS ROG series and similar hardware). It solves the most common "laptop-as-a-server" pain points: WiFi bridging, high RAM consumption, and power management.
-🌟 Key Features
+Transformă-ți laptopul într-o bestie de virtualizare cu **Proxmox 9**, optimizat pentru performanță extremă pe **WiFi**, latență minimă și workflow hibrid.
 
-    WiFi as WAN: Proxmox doesn't natively support bridging over WiFi. This script uses NetworkManager and IPTables NAT to route internet from your WiFi card to your Virtual Machines.
-    Automated VM Networking (vmbr1): Integrated dnsmasq server provides automatic DHCP IP addresses to any VM connected to the vmbr1 bridge. No manual IP configuration needed!
-    Hybrid Desktop (Cinnamon): Installs a lightweight Cinnamon Desktop on the host, allowing you to use your server as a daily-driver laptop while VMs run in the background.
-    GPU Power Saving (NVIDIA Blacklist): Automatically identifies and blacklists NVIDIA GPUs to save power and RAM, leaving the host to run cool on Intel Integrated Graphics (ready for GPU Passthrough later).
-    Proxmox Repo Fix: Switches to the official "No-Subscription" repositories and removes the enterprise warnings.
-    Power Optimization: Installs and configures TLP to manage battery life and CPU thermals effectively.
+> **Update v1.7.1:** Optimizat pentru Debian Trixie (Debian 13), performanțe validate de **160 Mbps** download în VM și latență stabilă de **~10ms**.
 
-⚠️ Important Warnings (Disclaimer)
+## 🌟 Caracteristici Cheie (v1.7.1 Turbo)
 
-    Intended Use: Designed for Home-Lab/Development setups. Not recommended for production datacenter environments.
-    Kernel/GRUB Changes: The script modifies GRUB parameters and refreshes initramfs. While safe for most modern Intel laptops, ensure you have a backup of your data.
-    Web UI Access: After reboot, the Proxmox Web Interface (port 8006) will be accessible via the WiFi IP address. The vmbr0 bridge is left in manual mode without an IP.
+- **WiFi Hardened Networking:** Utilizează `NetworkManager` cu politici stricte de stabilitate. Include un **WiFi Watchdog** (serviciu systemd) care monitorizează conexiunea și o resetează automat dacă ping-ul către Google DNS eșuează.
+- **Viteză de Top (160 Mbps):** Configurație optimizată pentru USB Passthrough și dezactivarea managementului de energie (Power Management Off) pe placa WiFi pentru a atinge viteze maxime.
+- **Proxmox 9 Ready:** Patch integrat pentru eliminarea mesajului "No Subscription" și configurare automată pentru repository-urile **Debian Trixie (Testing)**.
+- **Thorium Turbo Mode:** Instalează automat browserul Thorium (AVX optimized) și îi mută folderul de cache în **RAM disk (/tmp)** pentru a proteja SSD-ul și a oferi navigare instantanee.
+- **CPU Pinning (Core Isolation):** Dedică nucleele 4-7 exclusiv mașinilor virtuale prin `taskset`, lăsând nucleele 0-3 libere pentru fluiditatea interfeței Cinnamon și a proceselor Host.
+- **ZRAM & SSD Protection:** Implementare ZRAM cu algoritm `zstd` și `swappiness=100`. Include activarea automată `fstrim` pentru menținerea performanței SSD-ului pe termen lung.
+- **NAT Bridge Automat (vmbr1):** Server `dnsmasq` integrat pe bridge-ul privat (`10.10.10.1`), oferind internet și IP-uri DHCP instantaneu oricărui VM conectat.
 
+## ⚠️ Schimbări Majore de Stabilitate
 
-    Installation & Usage
+- **Kernel Lock:** Scriptul aplică `apt-mark hold` pe pachetele de kernel Proxmox pentru a preveni stricarea driverelor WiFi la update-uri nesupravegheate.
+- **DNS Imutabil:** Fișierul `/etc/resolv.conf` este configurat cu Google și Cloudflare DNS și blocat cu atributul `+i` (immutable) pentru a preveni suprascrierea lui de către ISP.
+- **GPU Optimization:** Blacklist automat pentru driverele NVIDIA pentru a forța rularea eficientă pe grafica integrată Intel.
 
-    Download the script onto a fresh Proxmox VE installation.
-    Edit your config at the top of the file:
-    bash
+## 🚀 Instalare și Utilizare
 
-    SSID1="Your_WiFi_Name"
-    PASS="Your_WiFi_Password"
-    USER_NAME="your_username"
+1. Instalează Proxmox VE "curat" pe laptop.
+2. Clonează repo-ul și editează fișierul `setup.sh` cu datele tale:
+   ```bash
+   SSID1="CASA CECILIA 5G"
+   WIFI_PASS="CASACECILIA"
+   USER_NAME="dani"
+   ```
+3. Rulează ca **ROOT**:
+   ```bash
+   chmod +x setup.sh
+   ./setup.sh
+   ```
+4. **Reboot:** Sistemul va porni automat în mediul grafic Cinnamon.
 
-    Folosește codul cu precauție.
+## 💻 Configurație Recomandată VM (v1.7.1)
 
-Run as ROOT:
-bash
+- **Network:** Bridge `vmbr1` (Model: **VirtIO**).
+- **Processor:** Type pe **host** și alocă **4 nuclee** (corectat pentru pinning pe 4-7).
+- **Disk:** SCSI cu controller **VirtIO SCSI single**, activat **Discard** și **io_uring**.
+- **Update Browser:** Rulează periodic `/usr/local/bin/update-thorium`.
 
-chmod +x proxmox_laptop_setup.sh
-sudo ./proxmox_laptop_setup.sh
-
-Folosește codul cu precauție.
-Reboot: Your laptop will boot into the Cinnamon GUI automatically.
-
-Recommended VM Configuration
-To get the best performance out of this setup:
-
-    Network: Use Bridge vmbr1 (Model: VirtIO). VMs will get internet instantly via DHCP.
-    Display: Use SPICE (qxl) for the smoothest experience.
-    Processor: Set Type to host to utilize all CPU instruction sets (AES, AVX, etc.).
-    Disk: Use SCSI with VirtIO SCSI single controller and enable io_uring
+---
+*Mentenanță și Optimizare: [Davinci198](https://github.com/Davinci198)*
